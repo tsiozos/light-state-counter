@@ -14,14 +14,14 @@ time_on=0       #time the light source is on
 #initialize hour count
 # total_time % 3600 is the bin to add time_on.
 # it's good for 240 hours = 10 days
-hour=bytearray(240)
-for i in range(240):
-    hour[i]=0
+hour=[0]
+for i in range(240-1):
+    hour.append(0)
 
 setup()
 
 def on_forever():
-    global total_time, time_on, forever_stop
+    global total_time, time_on, forever_stop, hour
     if not forever_stop:
         basic.pause(500)
         ll = get_data_point()

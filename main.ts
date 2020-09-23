@@ -14,9 +14,9 @@ let time_on = 0
 // initialize hour count
 //  total_time % 3600 is the bin to add time_on.
 //  it's good for 240 hours = 10 days
-let hour = control.createBuffer(240)
-for (i = 0; i < 240; i++) {
-    hour[i] = 0
+let hour = [0]
+for (i = 0; i < 240 - 1; i++) {
+    hour.push(0)
 }
 setup()
 basic.forever(function on_forever() {
