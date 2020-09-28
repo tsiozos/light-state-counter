@@ -23,10 +23,10 @@ basic.forever(function on_forever() {
     let ll: number;
     
     if (!forever_stop) {
-        basic.pause(500)
+        basic.pause(200)
         ll = get_data_point()
         led.unplot(1, 1)
-        basic.pause(500)
+        basic.pause(800)
         total_time = total_time + 1
         //  increase seconds
         if (ll >= mea - 3 * std) {
@@ -34,7 +34,7 @@ basic.forever(function on_forever() {
             // time_on = time_on + 1
             hour[Math.idiv(total_time, 3600)] += 1
             //  increase the appropriate bin by 1 sec
-            led.plot(1, 1)
+            led.plotBrightness(1, 1, 80)
         }
         
     }
@@ -63,7 +63,6 @@ function setup() {
     let i: number;
     
     let forever_stop = true
-    basic.clearScreen()
     mea = 0
     std = 0
     total_time = 0
@@ -75,10 +74,12 @@ function setup() {
         hour[i] = 0
     }
     let ll = get_data_point()
+    ll = get_data_point()
     for (i = 0; i < 10; i++) {
         basic.showNumber(9 - i)
     }
-    calc_stats(20, 250)
+    basic.clearScreen()
+    calc_stats(30, 200)
     // calculate the statistics for light on
     serial.writeString("mean=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
     basic.showIcon(IconNames.Yes)

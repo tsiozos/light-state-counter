@@ -23,15 +23,15 @@ setup()
 def on_forever():
     global total_time, time_on, forever_stop, hour
     if not forever_stop:
-        basic.pause(500)
+        basic.pause(200)
         ll = get_data_point()
         led.unplot(1,1)
-        basic.pause(500)
+        basic.pause(800)
         total_time = total_time+1   # increase seconds
         if ll >= mea-3*std:      # If light level is above the mean - 3 stdev then consider it on
             #time_on = time_on + 1
             hour[total_time // 3600] += 1    # increase the appropriate bin by 1 sec
-            led.plot(1,1)
+            led.plot_brightness(1, 1, 80)
 
 basic.forever(on_forever)
 
@@ -63,7 +63,6 @@ input.on_button_pressed(Button.B, on_button_pressed_b)
 def setup():
     global mea, std, total_time, time_on, hour
     forever_stop = True
-    basic.clear_screen()
     mea=0
     std=0
     total_time=0    #total time counting
@@ -72,9 +71,11 @@ def setup():
     for i in range(240):
         hour[i]=0
     ll=get_data_point()
+    ll=get_data_point()
     for i in range(10):
         basic.show_number(9-i)
-    calc_stats(20, 250)    #calculate the statistics for light on
+    basic.clear_screen()
+    calc_stats(30, 200)    #calculate the statistics for light on
     serial.write_string("mean="+str(mea)+"  stdev="+str(std)+"\n")
     basic.show_icon(IconNames.YES)
     basic.pause(2000)
