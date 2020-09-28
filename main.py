@@ -63,6 +63,7 @@ input.on_button_pressed(Button.B, on_button_pressed_b)
 def setup():
     global mea, std, total_time, time_on, hour
     forever_stop = True
+    basic.clear_screen()
     mea=0
     std=0
     total_time=0    #total time counting
@@ -76,8 +77,8 @@ def setup():
     calc_stats(20, 250)    #calculate the statistics for light on
     serial.write_string("mean="+str(mea)+"  stdev="+str(std)+"\n")
     basic.show_icon(IconNames.YES)
-    basic.pause(3000)
-    basic.clear_screen()
+    basic.pause(2000)
+    #basic.clear_screen()
     forever_stop = False
 
 #calculate statistics for a number of readings

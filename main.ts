@@ -63,6 +63,7 @@ function setup() {
     let i: number;
     
     let forever_stop = true
+    basic.clearScreen()
     mea = 0
     std = 0
     total_time = 0
@@ -81,8 +82,8 @@ function setup() {
     // calculate the statistics for light on
     serial.writeString("mean=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
     basic.showIcon(IconNames.Yes)
-    basic.pause(3000)
-    basic.clearScreen()
+    basic.pause(2000)
+    // basic.clear_screen()
     forever_stop = false
 }
 
