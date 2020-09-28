@@ -23,10 +23,10 @@ basic.forever(function on_forever() {
     let ll: number;
     
     if (!forever_stop) {
-        basic.pause(200)
-        ll = get_data_point()
+        basic.pause(100)
         led.unplot(1, 1)
-        basic.pause(800)
+        basic.pause(900)
+        ll = get_data_point()
         total_time = total_time + 1
         //  increase seconds
         if (ll >= mea - 3 * std) {
@@ -34,7 +34,7 @@ basic.forever(function on_forever() {
             // time_on = time_on + 1
             hour[Math.idiv(total_time, 3600)] += 1
             //  increase the appropriate bin by 1 sec
-            led.plotBrightness(1, 1, 80)
+            led.plot(1, 1)
         }
         
     }
@@ -42,7 +42,7 @@ basic.forever(function on_forever() {
 })
 input.onButtonPressed(Button.A, function on_button_pressed_a() {
     serial.writeString("mean light level=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
-    serial.writeString("total time=" + ("" + total_time) + " sec   time on=" + time_on + "\n\n\n\n")
+    serial.writeString("total time=" + ("" + total_time) + " sec   time on=" + hour[Math.idiv(total_time, 3600)] + "\n\n\n\n")
 })
 input.onButtonPressed(Button.AB, function on_button_pressed_ab() {
     setup()
@@ -74,17 +74,19 @@ function setup() {
         hour[i] = 0
     }
     let ll = get_data_point()
-    ll = get_data_point()
+    // ll=get_data_point()
     for (i = 0; i < 10; i++) {
         basic.showNumber(9 - i)
     }
     basic.clearScreen()
+    // input.light_level()
     calc_stats(30, 200)
     // calculate the statistics for light on
     serial.writeString("mean=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
     basic.showIcon(IconNames.Yes)
     basic.pause(2000)
     basic.clearScreen()
+    // input.light_level()
     forever_stop = false
 }
 

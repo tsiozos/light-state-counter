@@ -23,21 +23,21 @@ setup()
 def on_forever():
     global total_time, time_on, forever_stop, hour
     if not forever_stop:
-        basic.pause(200)
-        ll = get_data_point()
+        basic.pause(100)
         led.unplot(1,1)
-        basic.pause(800)
+        basic.pause(900)
+        ll = get_data_point()
         total_time = total_time+1   # increase seconds
         if ll >= mea-3*std:      # If light level is above the mean - 3 stdev then consider it on
             #time_on = time_on + 1
             hour[total_time // 3600] += 1    # increase the appropriate bin by 1 sec
-            led.plot_brightness(1, 1, 80)
+            led.plot(1,1)
 
 basic.forever(on_forever)
 
 def on_button_pressed_a():
     serial.write_string("mean light level="+str(mea)+"  stdev="+str(std)+"\n")
-    serial.write_string("total time="+str(total_time)+" sec   time on="+time_on+"\n\n\n\n")
+    serial.write_string("total time="+str(total_time)+" sec   time on="+hour[total_time // 3600]+"\n\n\n\n")
 
 input.on_button_pressed(Button.A, on_button_pressed_a)
 
@@ -71,15 +71,17 @@ def setup():
     for i in range(240):
         hour[i]=0
     ll=get_data_point()
-    ll=get_data_point()
+    #ll=get_data_point()
     for i in range(10):
         basic.show_number(9-i)
     basic.clear_screen()
+    #input.light_level()
     calc_stats(30, 200)    #calculate the statistics for light on
     serial.write_string("mean="+str(mea)+"  stdev="+str(std)+"\n")
     basic.show_icon(IconNames.YES)
     basic.pause(2000)
     basic.clear_screen()
+    #input.light_level()
     forever_stop = False
 
 #calculate statistics for a number of readings
