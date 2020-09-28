@@ -78,7 +78,7 @@ def setup():
     serial.write_string("mean="+str(mea)+"  stdev="+str(std)+"\n")
     basic.show_icon(IconNames.YES)
     basic.pause(2000)
-    #basic.clear_screen()
+    basic.clear_screen()
     forever_stop = False
 
 #calculate statistics for a number of readings

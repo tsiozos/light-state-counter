@@ -83,7 +83,7 @@ function setup() {
     serial.writeString("mean=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
     basic.showIcon(IconNames.Yes)
     basic.pause(2000)
-    // basic.clear_screen()
+    basic.clearScreen()
     forever_stop = false
 }
 
