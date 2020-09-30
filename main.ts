@@ -1,4 +1,3 @@
-let i: number;
 //  Light state counter v1.00
 //  We measure the time in seconds a light source is emitting light.
 //  Learn (LS should be on):
@@ -12,12 +11,10 @@ let total_time = 0
 let time_on = 0
 // time the light source is on
 // initialize hour count
-//  total_time % 3600 is the bin to add time_on.
-//  it's good for 240 hours = 10 days
-let hour = [0]
-for (i = 0; i < 240 - 1; i++) {
-    hour.push(0)
-}
+//  total_time % 240 is the bin to add time_on.
+//  it's good for 3000*4/1440 hours = 8 days
+let quad = control.createBuffer(3000)
+// every quad represents 240 seconds.
 setup()
 basic.forever(function on_forever() {
     let ll: number;
@@ -32,8 +29,8 @@ basic.forever(function on_forever() {
         if (ll >= mea - 3 * std) {
             //  If light level is above the mean - 3 stdev then consider it on
             // time_on = time_on + 1
-            hour[Math.idiv(total_time, 3600)] += 1
-            //  increase the appropriate bin by 1 sec
+            quad[Math.idiv(total_time, 240)] += 1
+            //  increase the appropriate bin by 1 sec max secs per cell is 240=4min
             led.plot(1, 1)
         }
         
@@ -41,8 +38,8 @@ basic.forever(function on_forever() {
     
 })
 input.onButtonPressed(Button.A, function on_button_pressed_a() {
-    serial.writeString("mean light level=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
-    serial.writeString("total time=" + ("" + total_time) + " sec   time on=" + hour[Math.idiv(total_time, 3600)] + "\n\n\n\n")
+    serial.writeString("mean light level=" + ("" + mea) + "  stdev=" + ("" + std) + serial.NEW_LINE)
+    serial.writeString("total time=" + ("" + total_time) + " sec   time on=" + quad[Math.idiv(total_time, 240)] + serial.NEW_LINE)
 })
 input.onButtonPressed(Button.AB, function on_button_pressed_ab() {
     setup()
@@ -50,12 +47,12 @@ input.onButtonPressed(Button.AB, function on_button_pressed_ab() {
 input.onButtonPressed(Button.B, function on_button_pressed_b() {
     
     let forever_stop = true
-    serial.writeString("\n\n\nhourID, minsOn\n")
-    for (let i = 0; i < Math.idiv(total_time, 3600) + 1; i++) {
-        serial.writeString("" + i + ", " + ("" + hour[i]) + "\n")
+    serial.writeString(serial.NEW_LINE + serial.NEW_LINE + "hourID, minsOn" + serial.NEW_LINE)
+    for (let i = 0; i < Math.idiv(total_time, 240) + 1; i++) {
+        serial.writeString("" + i + ", " + ("" + quad[i]) + serial.NEW_LINE)
         basic.pause(100)
     }
-    serial.writeString("\n")
+    serial.writeString(serial.NEW_LINE)
     serial.writeValue("total_time", total_time)
     forever_stop = false
 })
@@ -70,18 +67,18 @@ function setup() {
     time_on = 0
     // time the light source is on
     // hour=bytearray(240)
-    for (i = 0; i < 240; i++) {
-        hour[i] = 0
+    for (i = 0; i < 3000; i++) {
+        quad[i] = 0
     }
     let ll = get_data_point()
     // ll=get_data_point()
-    for (i = 0; i < 10; i++) {
-        basic.showNumber(9 - i)
+    for (i = 0; i < 6; i++) {
+        basic.showNumber(5 - i)
     }
     basic.clearScreen()
     // input.light_level()
-    calc_stats(30, 200)
-    // calculate the statistics for light on
+    calc_stats(40, 200)
+    // calculate the statistics for light on. 8 seconds
     serial.writeString("mean=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
     basic.showIcon(IconNames.Yes)
     basic.pause(2000)
