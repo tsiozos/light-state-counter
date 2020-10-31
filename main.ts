@@ -79,6 +79,10 @@ function setup() {
     // input.light_level()
     calc_stats(40, 200)
     // calculate the statistics for light on. 8 seconds
+    if (std < 1) {
+        std = 1
+    }
+    
     serial.writeString("mean=" + ("" + mea) + "  stdev=" + ("" + std) + "\n")
     basic.showIcon(IconNames.Yes)
     basic.pause(2000)

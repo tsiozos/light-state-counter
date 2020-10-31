@@ -75,6 +75,7 @@ def setup():
     basic.clear_screen()
     #input.light_level()
     calc_stats(40, 200)    #calculate the statistics for light on. 8 seconds
+    if std < 1: std = 1
     serial.write_string("mean="+str(mea)+"  stdev="+str(std)+"\n")
     basic.show_icon(IconNames.YES)
     basic.pause(2000)
