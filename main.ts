@@ -3,6 +3,8 @@
 //  Learn (LS should be on):
 //  User presses A and program calculates mean and standard deviation of the brightness emitted by the LS.
 //  
+radio.setGroup(77)
+radio.setTransmitPower(7)
 let forever_stop = false
 let mea = 0
 let std = 0
@@ -26,9 +28,10 @@ basic.forever(function on_forever() {
         ll = get_data_point()
         total_time = total_time + 1
         //  increase seconds
-        if (ll >= mea - 3 * std) {
-            //  If light level is above the mean - 3 stdev then consider it on
-            // time_on = time_on + 1
+        // if ll >= mea-3*std:      # If light level is above the mean - 3 stdev then consider it on
+        // time_on = time_on + 1
+        if (ll >= 0.7 * mea) {
+            //  if light level is above 70% of mean
             quad[Math.idiv(total_time, 240)] += 1
             //  increase the appropriate bin by 1 sec max secs per cell is 240=4min
             led.plot(1, 1)
@@ -45,11 +48,15 @@ input.onButtonPressed(Button.AB, function on_button_pressed_ab() {
     setup()
 })
 input.onButtonPressed(Button.B, function on_button_pressed_b() {
+    let s: string;
     
     let forever_stop = true
     serial.writeString(serial.NEW_LINE + serial.NEW_LINE + "hourID, minsOn" + serial.NEW_LINE)
+    radio.sendString("hourID, minsOn")
     for (let i = 0; i < Math.idiv(total_time, 240) + 1; i++) {
-        serial.writeString("" + i + ", " + ("" + quad[i]) + serial.NEW_LINE)
+        s = "" + i + ", " + ("" + quad[i]) + serial.NEW_LINE
+        serial.writeString(s)
+        radio.sendString(s)
         basic.pause(100)
     }
     serial.writeString(serial.NEW_LINE)

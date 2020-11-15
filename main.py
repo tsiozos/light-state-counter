@@ -4,6 +4,9 @@
 # User presses A and program calculates mean and standard deviation of the brightness emitted by the LS.
 # 
 
+radio.set_group(77)
+radio.set_transmit_power(7)
+
 forever_stop = False
 
 mea=0
@@ -26,8 +29,9 @@ def on_forever():
         basic.pause(900)
         ll = get_data_point()
         total_time = total_time+1   # increase seconds
-        if ll >= mea-3*std:      # If light level is above the mean - 3 stdev then consider it on
+        #if ll >= mea-3*std:      # If light level is above the mean - 3 stdev then consider it on
             #time_on = time_on + 1
+        if ll >= 0.7 * mea:     # if light level is above 70% of mean
             quad[total_time // 240] += 1    # increase the appropriate bin by 1 sec max secs per cell is 240=4min
             led.plot(1,1)
 
@@ -48,8 +52,11 @@ def on_button_pressed_b():
     global quad
     forever_stop = True
     serial.write_string(serial.NEW_LINE+serial.NEW_LINE+"hourID, minsOn"+serial.NEW_LINE)
+    radio.send_string("hourID, minsOn")
     for i in range(total_time // 240 + 1):
-        serial.write_string(str(i)+", "+str(quad[i])+serial.NEW_LINE)
+        s = str(i)+", "+str(quad[i])+serial.NEW_LINE
+        serial.write_string(s)
+        radio.send_string(s)
         basic.pause(100)
 
     serial.write_string(serial.NEW_LINE)
