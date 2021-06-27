@@ -23,7 +23,7 @@ def on_button_pressed_b():
     global forever_stop2
     forever_stop2 = True
     serial.write_string("" + serial.NEW_LINE + serial.NEW_LINE + "hourID, minsOn" + serial.NEW_LINE)
-    radio.send_string("hourID, minsOn")
+    radio.send_string("hourID, secOn")
     i = 0
     while i <= Math.idiv(total_time, 240) + 1 - 1:
         s = "" + str(i) + ", " + ("" + str(quad[i])) + serial.NEW_LINE
@@ -127,7 +127,7 @@ def on_forever():
         # increase seconds
         # if ll >= mea-3*std:      # If light level is above the mean - 3 stdev then consider it on
         # time_on = time_on + 1
-        if ll >= 0.7 * mea:
+        if ll >= mea - std*3:
             quad[Math.idiv(total_time, 240)] += 1
             # increase the appropriate bin by 1 sec max secs per cell is 240=4min
             led.plot(1, 1)

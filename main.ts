@@ -22,7 +22,7 @@ input.onButtonPressed(Button.B, function on_button_pressed_b() {
     
     forever_stop2 = true
     serial.writeString("" + serial.NEW_LINE + serial.NEW_LINE + "hourID, minsOn" + serial.NEW_LINE)
-    radio.sendString("hourID, minsOn")
+    radio.sendString("hourID, secOn")
     let i = 0
     while (i <= Math.idiv(total_time, 240) + 1 - 1) {
         s = "" + ("" + i) + ", " + ("" + ("" + quad[i])) + serial.NEW_LINE
@@ -136,7 +136,7 @@ basic.forever(function on_forever() {
         //  increase seconds
         //  if ll >= mea-3*std:      # If light level is above the mean - 3 stdev then consider it on
         //  time_on = time_on + 1
-        if (ll >= 0.7 * mea) {
+        if (ll >= mea - std * 3) {
             quad[Math.idiv(total_time, 240)] += 1
             //  increase the appropriate bin by 1 sec max secs per cell is 240=4min
             led.plot(1, 1)
