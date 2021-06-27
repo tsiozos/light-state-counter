@@ -17,7 +17,7 @@ input.onButtonPressed(Button.A, function on_button_pressed_a() {
     serial.writeString("mean light level=" + ("" + ("" + mea)) + "  stdev=" + ("" + ("" + std)) + serial.NEW_LINE)
     serial.writeString("total time=" + ("" + ("" + total_time)) + " sec   time on=" + ("" + quad[Math.idiv(total_time, 240)]) + serial.NEW_LINE)
 })
-input.onButtonPressed(Button.B, function on_button_pressed_b() {
+function on_button_pressed_b() {
     let s: string;
     
     forever_stop2 = true
@@ -28,13 +28,18 @@ input.onButtonPressed(Button.B, function on_button_pressed_b() {
         s = "" + ("" + i) + ", " + ("" + ("" + quad[i])) + serial.NEW_LINE
         serial.writeString(s)
         radio.sendString(s)
-        basic.pause(100)
+        basic.pause(randint(100, 130))
         i += 1
     }
     serial.writeString("" + serial.NEW_LINE)
     serial.writeValue("total_time", total_time)
+    radio.sendString("total_time=" + total_time)
+    basic.pause(randint(200, 300))
+    radio.sendString("total_time=" + total_time)
     forever_stop2 = false
-})
+}
+
+input.onButtonPressed(Button.B, on_button_pressed_b)
 function setup() {
     
     forever_stop3 = true
@@ -123,6 +128,7 @@ radio.setTransmitPower(7)
 let quad = control.createBuffer(3000)
 //  every quad represents 240 seconds.
 setup()
+// pretend we pressed the B button
 basic.forever(function on_forever() {
     let ll: number;
     
@@ -140,6 +146,11 @@ basic.forever(function on_forever() {
             quad[Math.idiv(total_time, 240)] += 1
             //  increase the appropriate bin by 1 sec max secs per cell is 240=4min
             led.plot(1, 1)
+        }
+        
+        // every 600 seconds send radio data
+        if (total_time % 600 == 0) {
+            on_button_pressed_b()
         }
         
     }

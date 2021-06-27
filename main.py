@@ -29,10 +29,13 @@ def on_button_pressed_b():
         s = "" + str(i) + ", " + ("" + str(quad[i])) + serial.NEW_LINE
         serial.write_string(s)
         radio.send_string(s)
-        basic.pause(100)
+        basic.pause(randint(100,130))
         i += 1
     serial.write_string("" + (serial.NEW_LINE))
     serial.write_value("total_time", total_time)
+    radio.send_string("total_time="+total_time)
+    basic.pause(randint(200,300))
+    radio.send_string("total_time="+total_time)
     forever_stop2 = False
 input.on_button_pressed(Button.B, on_button_pressed_b)
 
@@ -131,4 +134,8 @@ def on_forever():
             quad[Math.idiv(total_time, 240)] += 1
             # increase the appropriate bin by 1 sec max secs per cell is 240=4min
             led.plot(1, 1)
+        
+        #every 600 seconds send radio data
+        if total_time % 600 == 0:
+            on_button_pressed_b()   #pretend we pressed the B button
 basic.forever(on_forever)
